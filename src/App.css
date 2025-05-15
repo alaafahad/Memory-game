@@ -1,0 +1,112 @@
+body{
+   display: flex;
+   height: 100vh;
+   align-items: center;
+   justify-content: center;
+   background: linear-gradient(135deg, #fef6ff, #e0f7fa);
+}
+main{
+  padding: 25px 20px 20px 15px;
+}
+main h1{
+  text-align: center;
+  color: #5c4b51;
+  font-weight: 600;
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.card-container {
+  margin-top: 5px;
+  padding: 15px;
+  display: grid;
+  gap: 10px; 
+  grid-template-columns: repeat(3, 1fr); 
+  perspective: 1000px; 
+}
+
+.card {
+  width: 100%; /* Takes full width of the grid cell */
+  aspect-ratio: 1; /* Maintains a square aspect ratio */
+  transform-style: preserve-3d; /* Allows 3D transformations */
+  transition: transform 0.6s ease, box-shadow 0.3s ease; /* Smooth transition for flipping and box shadow */
+  border-radius: 10px;
+  position: relative; /* Needed for correct positioning of child elements */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+.card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+}
+
+.card-inner {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  transition: transform 0.6s; /* Smooth flip effect */
+  transform-style: preserve-3d; /* Preserve 3D effect */
+}
+/* 
+.card:hover .card-inner {
+  transform: rotateY(180deg); /* Flip effect on hover 
+}
+*/
+.card.active{
+  transform: rotateY(180deg) scale(1.03);
+}
+
+.card-front, .card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden; /* Hide the back side when facing away */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  border-radius: 10px; /* Rounded corners */
+  font-size: 3rem;
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.card-front {
+  background-color: #c2e9fb;
+}
+
+.card-back {
+  background-color: #ffb3b3;
+  transform: rotateY(180deg); /* Start flipped */
+}
+#hud {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-weight: 600;
+  background: rgba(255,255,255,0.6);
+  padding: 8px 12px;
+  border-radius: 10px;
+  font-family: 'Poppins', sans-serif;
+}
+#hud button {
+  border: none;
+  background: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+body.dark {
+  background: linear-gradient(135deg, #1f1f2e, #2c3e50);
+  color: #fff;
+}
+
+body.dark .card-front {
+  background-color: #34495e;
+}
+
+body.dark .card-back {
+  background-color: #9b59b6;
+}

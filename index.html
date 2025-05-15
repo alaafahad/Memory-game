@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Memory Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+    <style>
+       *{
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+       }
+       body {
+         font-family: 'Poppins', sans-serif;
+         background: linear-gradient(135deg, #fef6ff, #e0f7fa);
+       }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+      <div id="hud">
+        <div id="timer">Time: 0s</div>
+        <div id="moves">Moves: 0</div>
+        <button id="toggle-theme">🌙</button>
+        <button id="toggle-sound">🔊</button>
+      </div>
+    
+      <div id="root"></div>
+    
+      <audio id="flip-sound" src="/sounds/flip.mp3" preload="auto"></audio>
+      <audio id="match-sound" src="/sounds/match.mp3" preload="auto"></audio>
+      <audio id="win-sound" src="/sounds/win.mp3" preload="auto"></audio>
+      <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
