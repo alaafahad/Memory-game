@@ -12,7 +12,6 @@ function shuffleArray(arr) {
 
 function App() {
   const [gameStarted, setGameStarted] = useState(false);
-  const [playerName, setPlayerName] = useState('');
   const [difficulty, setDifficulty] = useState('medium');
   const [cardObjects, setCardObjects] = useState([]);
   const [selectedCards, setSelectedCards] = useState([]);
@@ -23,34 +22,37 @@ function App() {
 
   const startGame = () => {
     let emojis = ['🧸', '🌸', '🍓', '🎀', '🦋', '💌'];
-
-    if (difficulty === 'easy') emojis = emojis.slice(0, 3);
-    else if (difficulty === 'hard') emojis = [...emojis, '🐚', '🫧', '🍰'];
-
+  
+    if (difficulty === 'easy') emojis = emojis.slice(0, 3);        // 3 pairs
+    else if (difficulty === 'hard') emojis = [...emojis, '🐚', '🫧', '🍰']; // 9 pairs
+  
     const cards = shuffleArray([...emojis, ...emojis]).map((emoji, index) => ({
       index,
       emoji,
       flipped: false,
       solved: false,
     }));
-
+  
     setCardObjects(cards);
     setSelectedCards([]);
     setMoves(0);
     setTime(0);
   };
 
-  // Timer (runs only after game starts)
+  // Init game on mount
   useEffect(() => {
-    if (!gameStarted) return;
+    startGame();
+  }, []);
 
+  // Timer
+  useEffect(() => {
     const interval = setInterval(() => {
       setTime((prev) => prev + 1);
     }, 1000);
     return () => clearInterval(interval);
-  }, [gameStarted]);
+  }, []);
 
-  // Dark mode
+  // Theme toggle
   useEffect(() => {
     document.body.className = darkTheme ? 'dark' : '';
   }, [darkTheme]);
@@ -60,6 +62,8 @@ function App() {
     const sound = document.getElementById(`${type}-sound`);
     sound?.play();
   };
+
+  const [playerName, setPlayerName] = useState('');
 
   const handleCardClick = (clickedCard) => {
     if (clickedCard.flipped || clickedCard.solved || selectedCards.length === 2) return;
@@ -106,15 +110,15 @@ function App() {
 
   useEffect(() => {
     if (hasWon) {
-      playSound('win');
       const timer = setTimeout(() => {
         startGame();
       }, 6000);
+      playSound('win');
       return () => clearTimeout(timer);
     }
   }, [hasWon]);
 
-  // Setup theme/sound buttons
+  // HUD buttons functionality
   useEffect(() => {
     const themeBtn = document.getElementById('toggle-theme');
     const soundBtn = document.getElementById('toggle-sound');
@@ -122,21 +126,19 @@ function App() {
     if (soundBtn) soundBtn.onclick = () => setSoundOn((prev) => !prev);
   }, []);
 
-  // HUD updates
+  // Update HUD
   useEffect(() => {
     const timerEl = document.getElementById('timer');
     const movesEl = document.getElementById('moves');
     if (timerEl) timerEl.textContent = `Time: ${time}s`;
     if (movesEl) movesEl.textContent = `Moves: ${moves}`;
   }, [time, moves]);
-
-  // Start Page
   if (!gameStarted) {
     return (
       <main style={{ textAlign: 'center', padding: '2rem' }}>
         <h1>🧠 Welcome to Alaa’s Memory Game</h1>
         <p>Enter your name and choose a difficulty to begin.</p>
-
+  
         <input
           type="text"
           placeholder="Your name"
@@ -145,7 +147,7 @@ function App() {
           style={{ padding: '10px', margin: '10px', fontSize: '1rem' }}
         />
         <br />
-
+  
         <select
           value={difficulty}
           onChange={(e) => setDifficulty(e.target.value)}
@@ -156,7 +158,7 @@ function App() {
           <option value="hard">Hard (9 pairs)</option>
         </select>
         <br />
-
+  
         <button
           onClick={() => {
             startGame();
@@ -169,38 +171,27 @@ function App() {
       </main>
     );
   }
-
   return (
-    <>
-      {/* HUD */}
-      <div id="hud">
-        <div id="timer">Time: 0s</div>
-        <div id="moves">Moves: 0</div>
-        <button id="toggle-theme">🌙</button>
-        <button id="toggle-sound">🔊</button>
-      </div>
+    <main>
+      {hasWon && <Confetti />}
+      {!hasWon && <h1>{playerName}'s Memory Game 🧠</h1>}
+{hasWon && <h2>Well done, {playerName}! You nailed it 🎉</h2>}
 
-      <main>
-        {hasWon && <Confetti />}
-        {!hasWon && <h1>{playerName}'s Memory Game 🧠</h1>}
-        {hasWon && <h2>Well done, {playerName}! You nailed it 🎉</h2>}
-
-        <div className="card-container">
-          {cardObjects.map((card) => (
-            <div
-              className={`card ${card.flipped ? 'active' : ''}`}
-              key={card.index}
-              onClick={() => handleCardClick(card)}
-            >
-              <div className="card-inner">
-                <div className="card-front"></div>
-                <div className="card-back">{card.emoji}</div>
-              </div>
+      <div className="card-container">
+        {cardObjects.map((card) => (
+          <div
+            className={`card ${card.flipped ? 'active' : ''}`}
+            key={card.index}
+            onClick={() => handleCardClick(card)}
+          >
+            <div className="card-inner">
+              <div className="card-front"></div>
+              <div className="card-back">{card.emoji}</div>
             </div>
-          ))}
-        </div>
-      </main>
-    </>
+          </div>
+        ))}
+      </div>
+    </main>
   );
 }
 
